@@ -1,0 +1,40 @@
+
+reactome test
+  <script type="text/javascript" language="javascript" src="http://www.reactome.org/DiagramJs/diagram/diagram.nocache.js"></script>
+     
+ <div id="diagramHolder"></div>
+
+<script type="text/javascript" language="javascript">
+//Creating the Reactome Diagram widget
+    //Take into account a proxy needs to be set up in your server side pointing to www.reactome.org
+    function onReactomeDiagramReady(){  //This function is automatically called when the widget code is ready to be used
+        var diagram = Reactome.Diagram.create({
+            "proxyPrefix" : "/reactome",
+            "placeHolder" : "diagramHolder",
+            "width" : 900,
+            "height" : 500
+        });
+
+        //Initialising it to the "Metabolism of nucleotides" pathway
+        diagram.loadDiagram("R-HSA-15869");
+
+        //Adding different listeners
+
+        diagram.onDiagramLoaded(function (loaded) {
+            console.info("Loaded ", loaded);
+            diagram.selectItem("R-HSA-111804");
+            //diagram.flagItems("TXN");
+            diagram.setAnalysisToken("MjAxNjAyMjQwODI4NTlfNDU3", "TOTAL");
+        });
+
+        diagram.onObjectHovered(function (hovered){
+            console.info("Hovered ", hovered);
+        });
+
+        diagram.onObjectSelected(function (selected){
+            console.info("Selected ", selected);
+        });
+    }
+        
+
+</script>

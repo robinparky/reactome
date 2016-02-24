@@ -1,0 +1,87 @@
+
+reactome test
+
+//We are using jQuery for this example
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script type="text/javascript">
+
+        $( document ).ready(function() {
+
+            $("#analyseURL").click(function() {
+
+                // The URL of the analysis method
+
+                var reactomeURI = 'http://www.reactome.org/AnalysisService/identifiers/projection?pageSize=20&page=1';
+
+                // The URL of our sample to be submitted for analysis
+
+                //var dataUrl = "http://www.ebi.ac.uk/pride/ws/archive/protein/list/assay/27929.acc";
+                var dataUrl = "Q8TCZ2 1 5\nQ96SB3 2 6\nQ96NA2 3 34";
+
+
+                // Perform the ajax call to the analysis service
+
+                jQuery.ajax({
+
+                    type: "POST",
+
+                    url: reactomeURI,
+
+                    data: dataUrl,
+
+                    headers: {
+
+                        "Content-Type": "text/plain"
+
+                    },
+
+                    dataType: "json"
+
+                }).success(function (data, textStatus) {
+
+                    if (textStatus === 'success') {
+
+                        var table = "<table width='100%'><tr><td>Name</td><td>pValue</td><td>FDR</td></tr>";
+
+                        $.each(data.pathways, function(num, pathway){
+
+                            table += "<tr><td><a href='http://www.reactome.org/PathwayBrowser/#/"+  pathway.stId +"&DTAB=AN&ANALYSIS=" + data.summary.token +"'>" + pathway.name + "</a></td><td>" + pathway.entities.pValue + "</td><td>" + pathway.entities.fdr + "</td>";
+
+                        });
+
+                        table += "</table>";
+
+                        $("#resultsHolder").append(table);
+
+                    } else {
+
+                        $('#errorHolder').text('An error occurred');
+
+                    }
+
+                }).error(function (data, status, headers, config) {
+
+                    $('#errorHolder').text(status + ": " + headers);
+
+                });
+
+            });
+
+        });
+
+    </script>
+
+
+
+    <h1>Connection to the Reactome Analysis Service</h1>
+
+    <p>Please click the button to execute the analysis:</p>
+
+    <button id="analyseURL">Analyse data</button>
+
+    <br> <br>
+
+    <div id="resultsHolder"></div>
+
+    <div id="errorHolder" style="color:red"></div>
+
